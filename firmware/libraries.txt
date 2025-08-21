@@ -1,0 +1,56 @@
+# Required Arduino Libraries for ESP Rover
+
+## Core Libraries (install via Arduino Library Manager)
+1. M5StickC (by M5Stack) - Version 0.2.5 or later
+2. ArduinoJson (by Benoit Blanchon) - Version 6.21.0 or later
+3. ESPAsyncWebServer (by me-no-dev) - Version 1.2.3 or later
+4. AsyncTCP (by me-no-dev) - Version 1.1.1 or later
+
+## Installation Instructions
+
+### Via Arduino IDE:
+1. Open Arduino IDE
+2. Go to Tools > Manage Libraries
+3. Search for each library above and click Install
+4. Select ESP32 Dev Module as board
+5. Set the following board settings:
+   - CPU Frequency: 240MHz
+   - Flash Frequency: 80MHz
+   - Flash Mode: QIO
+   - Flash Size: 4MB
+   - Partition Scheme: Default 4MB with spiffs
+   - Core Debug Level: None (or Info for debugging)
+
+### Via PlatformIO (Alternative):
+Add to platformio.ini:
+```
+[env:m5stick-c]
+platform = espressif32
+board = m5stick-c
+framework = arduino
+lib_deps = 
+    m5stack/M5StickC@^0.2.5
+    bblanchon/ArduinoJson@^6.21.0
+    me-no-dev/ESPAsyncWebServer@^1.2.3
+    me-no-dev/AsyncTCP@^1.1.1
+
+monitor_speed = 115200
+upload_speed = 1500000
+```
+
+## Hardware Requirements
+- M5StickC (ESP32-PICO-D4)
+- M5Stack RoverC Pro with 4 mecanum wheels
+- 16340 rechargeable battery
+- WiFi connection for voice processing
+
+## Pin Configuration
+- SDA: GPIO 0
+- SCL: GPIO 26
+- I2C Address: 0x38 (RoverC)
+- I2C Frequency: 100kHz
+
+## Memory Requirements
+- Flash: ~1.2MB (including web interface)
+- RAM: ~50KB runtime
+- SPIFFS: 1MB for configuration storage

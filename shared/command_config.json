@@ -1,0 +1,91 @@
+{
+  "version": "1.0",
+  "commands": {
+    "move": {
+      "forward": {
+        "motor_speeds": [1, 1, 1, 1],
+        "duration_ms": 1000,
+        "description": "Move forward"
+      },
+      "backward": {
+        "motor_speeds": [-1, -1, -1, -1],
+        "duration_ms": 1000,
+        "description": "Move backward"
+      }
+    },
+    "turn": {
+      "left": {
+        "motor_speeds": [-1, 1, -1, 1],
+        "duration_ms": 500,
+        "description": "Turn left in place"
+      },
+      "right": {
+        "motor_speeds": [1, -1, 1, -1],
+        "duration_ms": 500,
+        "description": "Turn right in place"
+      }
+    },
+    "strafe": {
+      "left": {
+        "motor_speeds": [-1, 1, 1, -1],
+        "duration_ms": 1000,
+        "description": "Strafe left using mecanum wheels"
+      },
+      "right": {
+        "motor_speeds": [1, -1, -1, 1],
+        "duration_ms": 1000,
+        "description": "Strafe right using mecanum wheels"
+      }
+    },
+    "diagonal": {
+      "forward_left": {
+        "motor_speeds": [0, 1, 1, 0],
+        "duration_ms": 1000,
+        "description": "Move diagonally forward-left"
+      },
+      "forward_right": {
+        "motor_speeds": [1, 0, 0, 1],
+        "duration_ms": 1000,
+        "description": "Move diagonally forward-right"
+      },
+      "backward_left": {
+        "motor_speeds": [0, -1, -1, 0],
+        "duration_ms": 1000,
+        "description": "Move diagonally backward-left"
+      },
+      "backward_right": {
+        "motor_speeds": [-1, 0, 0, -1],
+        "duration_ms": 1000,
+        "description": "Move diagonally backward-right"
+      }
+    },
+    "stop": {
+      "": {
+        "motor_speeds": [0, 0, 0, 0],
+        "duration_ms": 0,
+        "description": "Stop all movement"
+      }
+    }
+  },
+  "speed_multipliers": {
+    "slow": 0.5,
+    "normal": 1.0,
+    "fast": 1.5
+  },
+  "motor_mapping": {
+    "description": "RoverC Pro motor mapping for mecanum wheels",
+    "motors": [
+      {"id": 0, "position": "front_left", "pin": "M1"},
+      {"id": 1, "position": "front_right", "pin": "M2"},
+      {"id": 2, "position": "rear_left", "pin": "M3"},
+      {"id": 3, "position": "rear_right", "pin": "M4"}
+    ]
+  },
+  "debug": {
+    "enable_serial_logging": true,
+    "log_level": "DEBUG",
+    "log_commands": true,
+    "log_motor_values": true,
+    "status_led_enabled": true
+  }
+}
