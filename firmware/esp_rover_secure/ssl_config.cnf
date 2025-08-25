@@ -1,0 +1,44 @@
+# SSL Certificate Configuration for ESP Rover
+# This file defines the certificate parameters for OpenSSL
+
+[req]
+default_bits = 2048
+prompt = no
+distinguished_name = req_distinguished_name
+req_extensions = v3_req
+
+[req_distinguished_name]
+C = US
+ST = California
+L = San Francisco
+O = ESP Rover Development
+OU = IoT Security Division
+CN = esp-rover-secure.local
+emailAddress = admin@esp-rover.local
+
+[v3_req]
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+subjectAltName = @alt_names
+extendedKeyUsage = serverAuth
+
+[v3_ca]
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid:always,issuer
+basicConstraints = CA:true
+
+[alt_names]
+# Add multiple hostnames/IPs that the rover might use
+DNS.1 = esp-rover-secure.local
+DNS.2 = esp-rover.local
+DNS.3 = rover.local
+DNS.4 = localhost
+
+# Common local network IP ranges - update based on your network
+IP.1 = 192.168.1.100
+IP.2 = 192.168.4.1
+IP.3 = 10.0.0.100
+IP.4 = 127.0.0.1
+
+# Add your specific network IPs here
+# IP.5 = your.rover.ip.address

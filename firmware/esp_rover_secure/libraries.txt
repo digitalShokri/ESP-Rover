@@ -1,0 +1,247 @@
+# ESP Rover Secure - Required Libraries
+
+## MANDATORY: Official Libraries Only
+This firmware uses ONLY official/trusted libraries for security compliance:
+- M5Stack official hardware libraries
+- Espressif official ESP32 framework components  
+- Arduino ecosystem standard libraries
+
+## Core Required Libraries
+
+### 1. M5StickC (by M5Stack) - REQUIRED
+**Version**: 0.2.5 or later
+**Source**: M5Stack official GitHub repository
+**Purpose**: Hardware abstraction layer for M5StickC
+**Installation**: Arduino Library Manager → Search "M5StickC" → Install
+
+**Provides**:
+- M5StickC hardware initialization
+- LCD display control
+- Button input handling
+- AXP192 power management (battery monitoring)
+- IMU sensor access (MPU6886)
+- I2C communication setup
+
+### 2. ArduinoJson (by Benoît Blanchon) - REQUIRED  
+**Version**: 6.21.0 or later
+**Source**: Arduino ecosystem standard (officially endorsed)
+**Purpose**: JSON serialization/deserialization for API communication
+**Installation**: Arduino Library Manager → Search "ArduinoJson" → Install
+
+**Provides**:
+- Efficient JSON parsing for movement commands
+- Telemetry data serialization
+- Configuration file handling
+- API response formatting
+
+## ESP32 Framework Libraries (Built-in)
+
+### WiFi Libraries - ESP32 Arduino Core
+```cpp
+#include <WiFi.h>            // WiFi connectivity
+#include <WiFiClientSecure.h> // HTTPS/TLS support
+#include <WebServer.h>       // HTTP server functionality
+```
+**Source**: Espressif ESP32 Arduino Core (official)
+**Purpose**: Network communication and HTTPS servers
+
+### System Libraries - ESP32 Arduino Core
+```cpp
+#include <SPIFFS.h>          // File system for configuration
+#include <ESPmDNS.h>         // Network discovery
+#include <Wire.h>            // I2C communication
+#include <freertos/FreeRTOS.h> // Multi-threading
+#include <freertos/task.h>   // Task management
+#include <esp_task_wdt.h>    // Watchdog timer
+```
+**Source**: Espressif ESP32 Arduino Core (official)
+**Purpose**: Core system functionality
+
+## Arduino IDE Board Setup
+
+### ESP32 Arduino Core Installation
+1. **Add Board Manager URL**:
+   - File → Preferences
+   - Additional Boards Manager URLs:
+   ```
+   https://espressif.github.io/arduino-esp32/package_esp32_index.json
+   ```
+
+2. **Install ESP32 Core**:
+   - Tools → Board → Board Manager
+   - Search "esp32"
+   - Install "esp32 by Espressif Systems" (v2.0.0 or later)
+
+### Board Configuration for M5StickC
+```
+Board: "M5StickC" (recommended) or "ESP32 Dev Module"
+Upload Speed: 1500000
+CPU Frequency: 240MHz (WiFi/BT)
+Flash Frequency: 80MHz
+Flash Mode: QIO
+Flash Size: 4MB (32Mb)
+Partition Scheme: Default 4MB with spiffs (1.2MB APP/1.5MB SPIFFS)
+Core Debug Level: None (production) or Info (development)
+Arduino Runs On: Core 1
+Events Run On: Core 1
+```
+
+## FORBIDDEN Third-Party Libraries
+
+❌ **DO NOT USE** these popular but non-official libraries:
+- `ESPAsyncWebServer` (use built-in `WebServer.h` instead)
+- `AsyncTCP` (use built-in WiFi libraries instead)
+- Any non-official JSON libraries
+- Third-party SSL/TLS libraries
+- Custom motor control libraries
+
+**Reason**: Security compliance requires using only official/trusted sources.
+
+## Library Verification
+
+### Check Library Sources
+1. **M5StickC Library**:
+   - Author: M5Stack
+   - Repository: https://github.com/m5stack/M5StickC
+   - Verify official M5Stack branding
+
+2. **ArduinoJson Library**:
+   - Author: Benoît Blanchon
+   - Repository: https://github.com/bblanchon/ArduinoJson
+   - Arduino partner, officially endorsed
+
+3. **ESP32 Core Libraries**:
+   - Maintainer: Espressif Systems
+   - Repository: https://github.com/espressif/arduino-esp32
+   - Official ESP32 manufacturer
+
+## Installation Instructions
+
+### Method 1: Arduino IDE Library Manager (Recommended)
+1. Open Arduino IDE
+2. Go to Tools → Manage Libraries
+3. Search for each library:
+   - "M5StickC" → Install latest version
+   - "ArduinoJson" → Install latest version
+4. Restart Arduino IDE
+
+### Method 2: Manual Installation (Advanced)
+1. Download official releases from GitHub repositories
+2. Extract to Arduino libraries folder:
+   - Windows: `Documents\Arduino\libraries\`
+   - macOS: `~/Documents/Arduino/libraries/`
+   - Linux: `~/Arduino/libraries/`
+3. Restart Arduino IDE
+
+## Compilation Requirements
+
+### Memory Requirements
+- **Flash**: Minimum 4MB recommended
+- **RAM**: 520KB available on ESP32-PICO-D4
+- **SPIFFS**: 1.5MB for configuration and web assets
+
+### Compilation Flags
+The following compiler flags are automatically set:
+```
+-DBOARD_HAS_PSRAM=0
+-DARDUINO_M5STICK_C=1  
+-DARDUINO_ARCH_ESP32=1
+-DESP32=1
+-DCORE_DEBUG_LEVEL=0
+```
+
+### Build Process Verification
+After successful compilation, verify:
+- **Binary size**: Should be ~1.2MB or less
+- **RAM usage**: Should show ~200KB free after upload
+- **SPIFFS usage**: Should show available space for configuration
+
+## Troubleshooting Library Issues
+
+### Common Problems and Solutions
+
+#### "Library not found" errors
+- **Solution**: Install missing libraries via Library Manager
+- **Check**: Verify correct spelling and case sensitivity
+
+#### Compilation errors with M5StickC
+- **Solution**: Ensure correct board selection (M5StickC)
+- **Check**: Board configuration matches specifications above
+
+#### JSON parsing errors
+- **Solution**: Verify ArduinoJson version 6.21.0 or later
+- **Check**: JSON syntax in configuration files
+
+#### WiFi connection issues  
+- **Solution**: Verify ESP32 Core installation
+- **Check**: Network configuration and credentials
+
+#### Out of memory errors
+- **Solution**: Reduce JSON buffer sizes in config.h
+- **Check**: Available heap memory during operation
+
+### Verification Commands
+Use these serial monitor commands to verify installation:
+```cpp
+// Check library versions
+Serial.println("M5StickC Library: " + String(M5STICKC_LIB_VERSION));
+Serial.println("ArduinoJson: " + String(ARDUINOJSON_VERSION));
+Serial.println("ESP32 Core: " + String(ESP_ARDUINO_VERSION));
+
+// Check memory
+Serial.println("Free Heap: " + String(ESP.getFreeHeap()));
+Serial.println("Flash Size: " + String(ESP.getFlashChipSize()));
+```
+
+## Security Notes
+
+### Library Security Considerations
+1. **Only use official libraries** from trusted sources
+2. **Keep libraries updated** to latest stable versions  
+3. **Review library dependencies** before installation
+4. **Verify checksums** when downloading manually
+5. **Monitor for security advisories** from library maintainers
+
+### Supply Chain Security
+- Download only from official sources (Arduino Library Manager)
+- Verify publisher identity before installation
+- Avoid libraries with suspicious or unknown maintainers
+- Report security issues to library maintainers
+
+## Development Environment
+
+### Recommended IDE Settings
+```
+Arduino IDE Preferences:
+- Show verbose output: ✓ (during compilation and upload)
+- Display line numbers: ✓
+- Auto save: ✓ (every 1 minute)
+- External editor: ✗ (use IDE editor)
+```
+
+### Serial Monitor Configuration
+- **Baud Rate**: 115200
+- **Line Ending**: Both NL & CR
+- **Timestamps**: Enabled for debugging
+
+### File Encoding
+- **Source Files**: UTF-8 encoding
+- **Configuration**: ASCII only (for compatibility)
+
+## Version History
+
+### v1.0.0 (Current)
+- M5StickC Library v0.2.5+
+- ArduinoJson v6.21.0+
+- ESP32 Core v2.0.0+
+- Security compliance verified
+- All functionality tested
+
+### Future Versions
+- Monitor for security updates
+- Test compatibility with newer versions
+- Maintain backward compatibility where possible
+
+---
+
+**IMPORTANT**: Never install libraries from untrusted sources. Always verify the authenticity of libraries before installation. This firmware's security model depends on using only official, trusted libraries from verified maintainers.
